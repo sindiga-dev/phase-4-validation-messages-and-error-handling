@@ -14,14 +14,24 @@ function MovieForm() {
     female_director: false,
   });
 
-  function handleSubmit(e) {
-    fetch("/movies", {
+  async function handleSubmit(e) {
+    e.preventDefault();
+    // fetch returns a Promise, we must await it
+    const response = await fetch("/movies", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(formData),
-    }).then((response) => console.log(response));
+    });
+    // response.json() returns a Promise, we must await it
+    const data = await response.json();
+    if (response.ok) {
+      console.log("Movie created:", data);
+    } else {
+      // eslint-disable-next-line no-undef
+      setErrors(data.errors);
+    }
   }
 
   function handleChange(e) {
@@ -32,6 +42,7 @@ function MovieForm() {
       [e.target.id]: value,
     });
   }
+  //done
 
   return (
     <Wrapper>
